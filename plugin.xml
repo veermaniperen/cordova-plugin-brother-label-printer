@@ -71,6 +71,28 @@
                 <param name="ios-package" value="BrotherPrinter"/>
             </feature>
         </config-file>
+        
+        <config-file parent="NSBluetoothPeripheralUsageDescription" platform="ios" target="*-Info.plist">
+        <string>Bluetooth access for Brother label printer</string>
+            </config-file>
+            <config-file parent="NSBluetoothAlwaysUsageDescription" platform="ios" target="*-Info.plist">
+                <string>Bluetooth access for Brother label printer</string>
+            </config-file>
+            <config-file parent="UISupportedExternalAccessoryProtocols" platform="ios" target="*-Info.plist">
+                <array>
+                    <string>com.brother.ptcbp</string>
+                </array>
+            </config-file>
+            <config-file parent="NSLocalNetworkUsageDescription" platform="ios" target="*-Info.plist">
+                <string>Used to discover printers on your network</string>
+            </config-file>
+            <config-file parent="NSBonjourServices" platform="ios" target="*-Info.plist">
+                <array>
+                    <string>_printer._tcp</string>
+                    <string>_pdl-datastream._tcp</string>
+                    <string>_ipp._tcp</string>
+                </array>
+            </config-file>
 
         <!--
         Commenting these ExternalAccesory configs to avoid app being rejected from app store:
