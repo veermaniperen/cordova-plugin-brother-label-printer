@@ -10,14 +10,15 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <UIKit/UIKit.h>
 
-#include "BRPtouchPrintInfo.h"
-#include "BRPtouchPrinterData.h"
-#include "BRPtouchPrinterStatus.h"
-#include "BRPtouchLabelParam.h"
-#include "BRPtouchLabelInfoStatus.h"
-#import "BRPtouchBatteryInfo.h"
-#import "BRCustomPaperInfoCommand.h"
-#include "BRPtouchTemplateInfo.h"
+#include <BRLMPrinterKit/BRPtouchPrintInfo.h>
+#include <BRLMPrinterKit/BRPtouchPrinterData.h>
+#include <BRLMPrinterKit/BRPtouchPrinterStatus.h>
+#include <BRLMPrinterKit/BRPtouchLabelParam.h>
+#include <BRLMPrinterKit/BRPtouchLabelInfoStatus.h>
+#import <BRLMPrinterKit/BRPtouchBatteryInfo.h>
+#import <BRLMPrinterKit/BRCustomPaperInfoCommand.h>
+#include <BRLMPrinterKit/BRPtouchTemplateInfo.h>
+#include <BRLMPrinterKit/ImageCreationBlock.h>
 
 #define ERROR_NONE_          0
 #define ERROR_TIMEOUT		-3
@@ -76,6 +77,7 @@
 #define ERROR_OS_VERSION_NOT_SUPPORTED_ -57 // This does not occur in iOS
 #define ERROR_MINIMUM_LENGTH_LIMIT_ -58
 #define ERROR_FAIL_TO_CONVERT_CSV_TO_BLF_ -59
+#define ERROR_RESOLUTION_MODE_ -60
 
 
 //  Message value
@@ -178,6 +180,11 @@ typedef NS_ENUM(NSUInteger, CONNECTION_TYPE) {
     CONNECTION_TYPE_ERROR
 };
 
+typedef unsigned char BRPtouchPrinterInternalModelTypeFlag;
+extern const BRPtouchPrinterInternalModelTypeFlag BRPtouchPrinterInternalModelTypeFlagUnsupported; // Unsupported
+extern const BRPtouchPrinterInternalModelTypeFlag BRPtouchPrinterInternalModelTypeFlagCommunicationFailed; // CommunicationFailed
+
+
 extern NSString *BRWLanConnectBytesWrittenNotification;
 extern NSString *BRBluetoothSessionBytesWrittenNotification;
 extern NSString *BRBLEBytesWrittenNotification;
@@ -199,8 +206,6 @@ extern NSString *const BRMessageKey;
 - (BOOL)setCustomPaperFile:(NSString*)strFilePath;
 - (NSArray *)setCustomPaperInfoCommand:(BRCustomPaperInfoCommand *)customPaperInfoCommand;
 //- (BOOL)setEncryptKey:(NSString*)strKey keyEx:(NSString*)strKeyEx; // Not Available
-
-- (BOOL)isPrinterReady;
 
 - (NSArray *)getSupportPaperArray;
 - (BRPtouchLabelParam *)getCurrentLabelParam;
@@ -230,6 +235,8 @@ extern NSString *const BRMessageKey;
 - (int)removeTemplate:(NSArray<NSNumber*> *)keyList;
 - (int)getTemplateList:(NSArray<BRPtouchTemplateInfo*>*__autoreleasing *)templateList;
 
+- (NSArray <NSString *>*)searchAvailableSSID:(int)waitTime;
+
 - (void)setIPAddress:(NSString*)strIP;
 - (void)setupForBluetoothDeviceWithSerialNumber:(NSString*)serialNumber;
 - (void)setBLEAdvertiseLocalName:(NSString*)advertiseLocalName;
@@ -255,6 +262,7 @@ extern NSString *const BRMessageKey;
 
 - (int)printPDFAtPath:(NSString *)pdfPath pages:(NSUInteger [])indexes length:(NSUInteger)length copy:(int)nCopy;
 - (int)printImage:(CGImageRef)imageRef copy:(int)nCopy;
+- (int)printImagesWithBlock:(NSArray<ImageCreationBlock> *)imageProcList copy:(int)nCopy;
 - (int)printFiles:(NSArray *)filePaths copy:(int)nCopy;
 
 - (int)cancelPrinting;
@@ -268,5 +276,7 @@ extern NSString *const BRMessageKey;
 
 - (int)setPrinterSettings:(NSDictionary*)printerSettings;
 - (int)getPrinterSettings:(NSDictionary**)printerSettings require:(NSArray*)require;
+
+- (BRPtouchPrinterInternalModelTypeFlag)getPrinterInternalModelFlag;
 
 @end
